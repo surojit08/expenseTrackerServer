@@ -1,11 +1,16 @@
 const { Router } = require("express");
-const exp = Router();
-const { createExpense,findExpense,deleteExpense }=require("./../Controller/expenseController");
+const exp = Router({ mergeParams: true });
+const {
+  createExpense,
+  findExpense,
+  deleteExpense,
+  getOneExpense,
+} = require("./../Controller/expenseController");
 
-
-
-exp.post("/",createExpense).get("/getall",findExpense).delete("/del/:delid",deleteExpense);
-
+exp
+.get("/getall", findExpense)
+.get("/:find_id", getOneExpense)
+  .post("/", createExpense)
+  .delete("/del/:delid", deleteExpense);
 
 module.exports = exp;
- 

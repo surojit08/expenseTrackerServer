@@ -29,20 +29,32 @@ const findExpense = async (req, res) => {
   }
 };
 
-const deleteExpense = async (req,res)=>{
-  try{
-const del= req.params.delid;
-const delExp= await ExpenseModel.findOneAndUpdate(
-  {_id: del,status: "A"},
-  {status: "D"},
-  {new: true},
-);
-res.status(201).json(delExp);
+const deleteExpense = async (req, res) => {
+  try {
+    const del = req.params.delid;
+    const delExp = await ExpenseModel.findOneAndUpdate(
+      { _id: del, status: "A" },
+      { status: "D" },
+      { new: true }
+    );
+    res.status(201).json(delExp);
+  } catch (error) {
+    res.status(404).json(error);
   }
-  catch(Error){
-res.status(404).json(Error)
-  };
-}
+};
 
-module.exports = { createExpense,findExpense,deleteExpense };
+const getOneExpense = async (req, res) => {
+  try {
+    const findId = req.params.find_id;
+    const singleExpense = await ExpenseModel.findOne({
+      _id: findId,
+      status: "A",
+    });
+    // console.log(singleExpense);
+    res.status(200).json(singleExpense);
+  } catch (err) {
+    res.status(404).json(err);
+  }
+};
 
+module.exports = { createExpense, findExpense, deleteExpense, getOneExpense };
