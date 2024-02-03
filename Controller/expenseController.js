@@ -56,5 +56,34 @@ const getOneExpense = async (req, res) => {
     res.status(404).json(err);
   }
 };
+const updateExpense = async (req, res) => {
+  try {
+    const findId = req.params.find_id;
 
-module.exports = { createExpense, findExpense, deleteExpense, getOneExpense };
+    const income_val = Number(req.body.income);
+    const expense = Number(req.body.expense);
+    const date = req.body.date;
+    const balance = income_val - expense;
+    const updated = await ExpenseModel.findOneAndUpdate(
+      { _id: findId },
+      {
+        income: income_val,
+        expense: expense,
+        date: date,
+        balance: balance,
+      },
+      { new: true }
+    );
+    res.status(200).json(updated);
+  } catch (error) {
+    res.status(404).json(error);
+  }
+};
+
+module.exports = {
+  createExpense,
+  findExpense,
+  deleteExpense,
+  getOneExpense,
+  updateExpense,
+};
