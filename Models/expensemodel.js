@@ -11,11 +11,25 @@ const ExpenseSchema = new Schema({
     require: true,
     default: 0,
   },
-  expense: {
+  expenseTotal: {
     type: Number,
     require: true,
     default: 0,
   },
+  itemList:[
+    {
+      item_name:{
+        type: String,
+        require: true,
+      },
+      amount:{
+        type: Number,
+        require: true,
+        min:0,
+        max:500000
+      }
+    }
+  ],
   date: {
     type: Date,
     require: true,

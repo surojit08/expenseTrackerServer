@@ -1,15 +1,25 @@
 const ExpenseModel = require("../Models/expensemodel");
 
+const calBalAndExpense= (inc,exp_list)=>{
+  let totalExpense= 0;
+  for(let exp of exp_list){
+    totalExpense+= exp.amount;
+  }
+  const balance = inc - totalExpense;
+  return {totalExpense,balance};
+}
+
 const createExpense = async (req, res) => {
   const income_val = Number(req.body.income);
-  const expense = Number(req.body.expense);
+  const exp_list = req.body.exp_list.filter((item)=> item.item_name.length>0)
   const date = req.body.date;
-  const balance = income_val - expense;
-
+  const {balance,totalExpense}= calBalAndExpense(income_val,exp_list);
+  
   try {
     const newExpense = await ExpenseModel.create({
       income: income_val,
-      expense: expense,
+      expenseTotal: totalExpense,
+      itemList:exp_list, 
       balance: balance,
       date: date,
       status: "A",
@@ -59,16 +69,17 @@ const getOneExpense = async (req, res) => {
 const updateExpense = async (req, res) => {
   try {
     const findId = req.params.find_id;
-
     const income_val = Number(req.body.income);
-    const expense = Number(req.body.expense);
+    const exp_list = (req.body.exp_list);
     const date = req.body.date;
-    const balance = income_val - expense;
+    const {balance,totalExpense}= calBalAndExpense(income_val,exp_list);
+
     const updated = await ExpenseModel.findOneAndUpdate(
       { _id: findId },
       {
         income: income_val,
-        expense: expense,
+        expenseTotal: totalExpense,
+        itemList: exp_list,
         date: date,
         balance: balance,
       },
