@@ -43,5 +43,5 @@ const ExpenseSchema = new Schema({
   },
 });
 
-const ExpenseModel= model("Rupees",ExpenseSchema);
+const ExpenseModel= model("Expenses",ExpenseSchema);
 module.exports= ExpenseModel;
