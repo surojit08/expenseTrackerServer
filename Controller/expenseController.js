@@ -14,9 +14,11 @@ const createExpense = async (req, res) => {
   const exp_list = req.body.exp_list.filter((item)=> item.item_name.length>0)
   const date = req.body.date;
   const {balance,totalExpense}= calBalAndExpense(income_val,exp_list);
+  const userId= req.userInfo.userId;
   
   try {
     const newExpense = await ExpenseModel.create({
+      userId: userId,
       income: income_val,
       expenseTotal: totalExpense,
       itemList:exp_list, 
@@ -32,7 +34,8 @@ const createExpense = async (req, res) => {
 
 const findExpense = async (req, res) => {
   try {
-    const allExpense = await ExpenseModel.find({ status: "A" });
+    const userId= req.userInfo.userId;
+    const allExpense = await ExpenseModel.find({ status: "A",userId: userId });
     res.status(200).json(allExpense);
   } catch (error) {
     res.status(404).json(error);
@@ -41,9 +44,10 @@ const findExpense = async (req, res) => {
 
 const deleteExpense = async (req, res) => {
   try {
+    const userId= req.userInfo.userId;
     const del = req.params.delid;
     const delExp = await ExpenseModel.findOneAndUpdate(
-      { _id: del, status: "A" },
+      { _id: del, status: "A",userId: userId },
       { status: "D" },
       { new: true }
     );
@@ -55,10 +59,12 @@ const deleteExpense = async (req, res) => {
 
 const getOneExpense = async (req, res) => {
   try {
+    const userId= req.userInfo.userId;
     const findId = req.params.find_id;
     const singleExpense = await ExpenseModel.findOne({
       _id: findId,
       status: "A",
+      userId: userId,
     });
     // console.log(singleExpense);
     res.status(200).json(singleExpense);
@@ -73,9 +79,10 @@ const updateExpense = async (req, res) => {
     const exp_list = (req.body.exp_list);
     const date = req.body.date;
     const {balance,totalExpense}= calBalAndExpense(income_val,exp_list);
+    const userId= req.userInfo.userId;
 
     const updated = await ExpenseModel.findOneAndUpdate(
-      { _id: findId },
+      { _id: findId,userId: userId },
       {
         income: income_val,
         expenseTotal: totalExpense,
