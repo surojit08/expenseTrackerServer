@@ -1,6 +1,11 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model,Types } = require("mongoose");
 
 const ExpenseSchema = new Schema({
+ // Store the _id of the User.
+  userId: {
+    require: true,
+    type: Types.ObjectId,
+  },
   balance: {
     type: Number,
     require: true,
@@ -43,5 +48,5 @@ const ExpenseSchema = new Schema({
   },
 });
 
-const ExpenseModel= model("Rupees",ExpenseSchema);
+const ExpenseModel= model("Expenses",ExpenseSchema);
 module.exports= ExpenseModel;
