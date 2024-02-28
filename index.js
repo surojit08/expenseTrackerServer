@@ -36,9 +36,7 @@ const authMiddleware = async (req, res, next) => {
     // then it throw error, then goto the catch block
     // else continue by calling next().
     const { email } = jwtToken.verify(token, "HiladuUp");
-    console.log(email);
-    // find the user by this email
-    // we need _id of the user.
+    // console.log(email);
     const user = await userModel.findOne({ email: email });
     const userInfo = {
       userId: user._id,
