@@ -1,27 +1,30 @@
+const DEFAULT_LIMIT = 3;
 const ExpenseModel = require("../Models/expensemodel");
 
-const calBalAndExpense= (inc,exp_list)=>{
-  let totalExpense= 0;
-  for(let exp of exp_list){
-    totalExpense+= exp.amount;
+const calBalAndExpense = (inc, exp_list) => {
+  let totalExpense = 0;
+  for (let exp of exp_list) {
+    totalExpense += exp.amount;
   }
   const balance = inc - totalExpense;
-  return {totalExpense,balance};
-}
+  return { totalExpense, balance };
+};
 
 const createExpense = async (req, res) => {
   const income_val = Number(req.body.income);
-  const exp_list = req.body.exp_list.filter((item)=> item.item_name.length>0)
+  const exp_list = req.body.exp_list.filter(
+    (item) => item.item_name.length > 0
+  );
   const date = req.body.date;
-  const {balance,totalExpense}= calBalAndExpense(income_val,exp_list);
-  const userId= req.userInfo.userId;
-  
+  const { balance, totalExpense } = calBalAndExpense(income_val, exp_list);
+  const userId = req.userInfo.userId;
+
   try {
     const newExpense = await ExpenseModel.create({
       userId: userId,
       income: income_val,
       expenseTotal: totalExpense,
-      itemList:exp_list, 
+      itemList: exp_list,
       balance: balance,
       date: date,
       status: "A",
@@ -34,9 +37,15 @@ const createExpense = async (req, res) => {
 
 const findExpense = async (req, res) => {
   try {
-    const userId= req.userInfo.userId;
-    const allExpense = await ExpenseModel.find({ status: "A",userId: userId });
-    res.status(200).json(allExpense);
+    const userId = req.userInfo.userId;
+    const { page = 1 } = req.query;
+    const pageNum = parseInt(page);
+    const skipNum = (pageNum - 1) * DEFAULT_LIMIT; //1->0,3->12,5->24
+    const data = await ExpenseModel.find({ status: "A", userId: userId })
+      .sort("_id")
+      .limit(DEFAULT_LIMIT)
+      .skip(skipNum);
+    res.status(202).json(data);
   } catch (error) {
     res.status(404).json(error);
   }
@@ -44,10 +53,10 @@ const findExpense = async (req, res) => {
 
 const deleteExpense = async (req, res) => {
   try {
-    const userId= req.userInfo.userId;
+    const userId = req.userInfo.userId;
     const del = req.params.delid;
     const delExp = await ExpenseModel.findOneAndUpdate(
-      { _id: del, status: "A",userId: userId },
+      { _id: del, status: "A", userId: userId },
       { status: "D" },
       { new: true }
     );
@@ -59,7 +68,7 @@ const deleteExpense = async (req, res) => {
 
 const getOneExpense = async (req, res) => {
   try {
-    const userId= req.userInfo.userId;
+    const userId = req.userInfo.userId;
     const findId = req.params.find_id;
     const singleExpense = await ExpenseModel.findOne({
       _id: findId,
@@ -72,17 +81,18 @@ const getOneExpense = async (req, res) => {
     res.status(404).json(err);
   }
 };
+
 const updateExpense = async (req, res) => {
   try {
     const findId = req.params.find_id;
     const income_val = Number(req.body.income);
-    const exp_list = (req.body.exp_list);
+    const exp_list = req.body.exp_list;
     const date = req.body.date;
-    const {balance,totalExpense}= calBalAndExpense(income_val,exp_list);
-    const userId= req.userInfo.userId;
+    const { balance, totalExpense } = calBalAndExpense(income_val, exp_list);
+    const userId = req.userInfo.userId;
 
     const updated = await ExpenseModel.findOneAndUpdate(
-      { _id: findId,userId: userId },
+      { _id: findId, userId: userId },
       {
         income: income_val,
         expenseTotal: totalExpense,

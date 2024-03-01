@@ -54,8 +54,6 @@ const authMiddleware = async (req, res, next) => {
 };
 
 
-// 1st param path,2nd param Router.
-// https://localhost:5005/expense
 server.use("/users", user_route);
 server.use(authMiddleware);
 server.use("/expense", exp_route);
