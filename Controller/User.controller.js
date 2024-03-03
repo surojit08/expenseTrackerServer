@@ -15,7 +15,7 @@ const signUp = async (req, res) => {
       password: hashedPassword,
       address: address,
     });
-    res.status(201).send({ email: email });
+    res.status(201).json({ email: email });
   } catch (error) {
     res.status(404).json({ msg: "Cannot Create" });
   }

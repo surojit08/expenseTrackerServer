@@ -36,9 +36,7 @@ const authMiddleware = async (req, res, next) => {
     // then it throw error, then goto the catch block
     // else continue by calling next().
     const { email } = jwtToken.verify(token, "HiladuUp");
-    console.log(email);
-    // find the user by this email
-    // we need _id of the user.
+    // console.log(email);
     const user = await userModel.findOne({ email: email });
     const userInfo = {
       userId: user._id,
@@ -56,8 +54,6 @@ const authMiddleware = async (req, res, next) => {
 };
 
 
-// 1st param path,2nd param Router.
-// https://localhost:5005/expense
 server.use("/users", user_route);
 server.use(authMiddleware);
 server.use("/expense", exp_route);

@@ -1,7 +1,7 @@
-const { Schema, model,Types } = require("mongoose");
+const { Schema, model, Types } = require("mongoose");
 
 const ExpenseSchema = new Schema({
- // Store the _id of the User.
+  // Store the _id of the User.
   userId: {
     require: true,
     type: Types.ObjectId,
@@ -21,19 +21,19 @@ const ExpenseSchema = new Schema({
     require: true,
     default: 0,
   },
-  itemList:[
+  itemList: [
     {
-      item_name:{
+      item_name: {
         type: String,
         require: true,
       },
-      amount:{
+      amount: {
         type: Number,
         require: true,
-        min:0,
-        max:500000
-      }
-    }
+        min: 0,
+        max: 500000,
+      },
+    },
   ],
   date: {
     type: Date,
@@ -46,7 +46,11 @@ const ExpenseSchema = new Schema({
     default: "A",
     require: true,
   },
+  pagination: {
+    type: String,
+    require: true,
+  },
 });
 
-const ExpenseModel= model("Expenses",ExpenseSchema);
-module.exports= ExpenseModel;
+const ExpenseModel = model("Expenses", ExpenseSchema);
+module.exports = ExpenseModel;
