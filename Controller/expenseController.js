@@ -1,4 +1,4 @@
-const DEFAULT_LIMIT = 3;
+const DEFAULT_LIMIT = 10;
 const ExpenseModel = require("../Models/expensemodel");
 
 const calBalAndExpense = (inc, exp_list) => {
